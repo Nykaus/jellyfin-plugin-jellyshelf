@@ -1,16 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using Jellyfin.Plugin.Calibre.Configuration;
+using Jellyfin.Plugin.JellyShelf.Configuration;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Plugins;
 using MediaBrowser.Model.Plugins;
 using MediaBrowser.Model.Serialization;
 
-namespace Jellyfin.Plugin.Calibre;
+namespace Jellyfin.Plugin.JellyShelf;
 
 /// <summary>
-/// The Calibre Library plugin. Reads a Calibre <c>metadata.db</c> (read-only) and
+/// The JellyShelf plugin. Reads a Calibre <c>metadata.db</c> (read-only) and
 /// enriches Jellyfin book items with genres, tags, authors, series and covers
 /// without moving the original Calibre files.
 /// </summary>
@@ -31,7 +31,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
     public static Plugin? Instance { get; private set; }
 
     /// <inheritdoc />
-    public override string Name => "Calibre Library";
+    public override string Name => "JellyShelf";
 
     /// <inheritdoc />
     public override string Description =>

@@ -1,5 +1,5 @@
 ---
-name: "Calibre Library"
+name: "JellyShelf"
 guid: "e7f3b8d2-4c6a-4f1e-9b3a-2d5c7e9a1f40"
 version: "1.0.0.0"
 targetAbi: "12.3.0.0"
@@ -13,6 +13,6 @@ description: >
   author and series is then available natively in Jellyfin.
 category: "Metadata"
 artifacts:
-  - "Jellyfin.Plugin.Calibre.dll"
+  - "Jellyfin.Plugin.JellyShelf.dll"
 changelog: >
   1.0.0.0 - Initial release.

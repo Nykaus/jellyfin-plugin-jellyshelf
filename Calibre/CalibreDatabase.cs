@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Microsoft.Data.Sqlite;
 
-namespace Jellyfin.Plugin.Calibre.Calibre;
+namespace Jellyfin.Plugin.JellyShelf.Calibre;
 
 /// <summary>
 /// Read-only accessor for a Calibre <c>metadata.db</c>.

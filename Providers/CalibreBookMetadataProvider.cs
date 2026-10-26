@@ -6,14 +6,14 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Jellyfin.Data.Enums;
-using Jellyfin.Plugin.Calibre.Calibre;
-using Jellyfin.Plugin.Calibre.Configuration;
+using Jellyfin.Plugin.JellyShelf.Calibre;
+using Jellyfin.Plugin.JellyShelf.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using Microsoft.Extensions.Logging;
 
-namespace Jellyfin.Plugin.Calibre.Providers;
+namespace Jellyfin.Plugin.JellyShelf.Providers;
 
 /// <summary>
 /// Local metadata provider that enriches <see cref="Book"/> items from a Calibre

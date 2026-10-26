@@ -1,4 +1,4 @@
-# Jellyfin – Calibre Library
+# JellyShelf — lecteur de métadonnées Calibre pour Jellyfin
 
 Plugin de métadonnées pour Jellyfin qui lit une base **Calibre `metadata.db` en lecture seule**
 et enrichit la bibliothèque de livres avec les **genres, tags, auteurs, séries, titres et couvertures** —
@@ -38,11 +38,11 @@ dotnet restore
 dotnet build -c Release
 ```
 
-Le plugin est produit dans `bin/Release/net10.0/Jellyfin.Plugin.Calibre.dll`.
+Le plugin est produit dans `bin/Release/net10.0/Jellyfin.Plugin.JellyShelf.dll`.
 
 ### Cibler une autre version de Jellyfin
 
-Dans `Jellyfin.Plugin.Calibre.csproj`, ajustez la version de `Jellyfin.Controller`
+Dans `Jellyfin.Plugin.JellyShelf.csproj`, ajustez la version de `Jellyfin.Controller`
 pour **qu'elle corresponde à votre serveur** (visible dans *Tableau de bord → À propos*) :
 
 | Serveur Jellyfin | `Jellyfin.Controller` | `TargetFramework` |
@@ -55,12 +55,12 @@ pour **qu'elle corresponde à votre serveur** (visible dans *Tableau de bord →
 
 ## Installation A — manuelle (sideload)
 
-1. Copier `Jellyfin.Plugin.Calibre.dll` dans un sous-dossier de `plugins`, p. ex. :
-   - Windows : `%ProgramData%\Jellyfin\Server\plugins\Calibre\`
-   - Linux : `/var/lib/jellyfin/plugins/Calibre/`
-   - Docker : `/config/plugins/Calibre/`
+1. Copier `Jellyfin.Plugin.JellyShelf.dll` dans un sous-dossier de `plugins`, p. ex. :
+   - Windows : `%ProgramData%\Jellyfin\Server\plugins\JellyShelf\`
+   - Linux : `/var/lib/jellyfin/plugins/JellyShelf/`
+   - Docker : `/config/plugins/JellyShelf/`
 2. Redémarrer Jellyfin.
-3. *Tableau de bord → Mes plugins → Calibre Library* pour la configuration.
+3. *Tableau de bord → Mes plugins → JellyShelf* pour la configuration.
 
 ## Installation B — via un dépôt (page Extensions / « Gérer les dépôts »)
 
@@ -71,7 +71,7 @@ pwsh ./package.ps1 -BaseUrl "<URL publique du dossier qui hébergera les fichier
 ```
 
 Cela produit dans `./dist` :
-- `jellyfin-plugin-calibre_<version>.zip` (DLL + `meta.json`)
+- `jellyfin-plugin-jellyshelf_<version>.zip` (DLL + `meta.json`)
 - `manifest.json` (le fichier de dépôt, contenant l'empreinte MD5 et le `sourceUrl`)
 
 `-BaseUrl` est l'URL du **dossier** où tu publieras les deux fichiers ; le script en
@@ -92,7 +92,7 @@ Jellyfin. Options courantes :
 - **Nom du dépôt** : libellé libre (ex. `Calibre (local)`).
 - **URL du dépôt** : l'URL du **`manifest.json`** (ex. `http://<ip-nas>:8080/jellyfin-plugins/manifest.json`).
 
-Puis *Extensions → Catalogue → Calibre Library → Installer*, et redémarrer Jellyfin.
+Puis *Extensions → Catalogue → JellyShelf → Installer*, et redémarrer Jellyfin.
 
 > À chaque nouvelle version : incrémenter `AssemblyVersion`/`FileVersion` dans le `.csproj`,
 > relancer `package.ps1` avec le même `-BaseUrl`, republier les fichiers. Jellyfin proposera

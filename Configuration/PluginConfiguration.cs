@@ -1,6 +1,6 @@
 using MediaBrowser.Model.Plugins;
 
-namespace Jellyfin.Plugin.Calibre.Configuration;
+namespace Jellyfin.Plugin.JellyShelf.Configuration;
 
 /// <summary>
 /// Plugin configuration.

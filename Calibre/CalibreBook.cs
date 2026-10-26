@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Jellyfin.Plugin.Calibre.Calibre;
+namespace Jellyfin.Plugin.JellyShelf.Calibre;
 
 /// <summary>
 /// A single book as read from a Calibre <c>metadata.db</c>.

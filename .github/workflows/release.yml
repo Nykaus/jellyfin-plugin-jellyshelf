@@ -40,7 +40,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/jellyfin-plugin-calibre_*.zip
+          files: dist/jellyfin-plugin-jellyshelf_*.zip
 
       - name: Publish manifest.json to default branch
         shell: bash

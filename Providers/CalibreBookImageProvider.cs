@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.IO;
-using Jellyfin.Plugin.Calibre.Configuration;
+using Jellyfin.Plugin.JellyShelf.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 
-namespace Jellyfin.Plugin.Calibre.Providers;
+namespace Jellyfin.Plugin.JellyShelf.Providers;
 
 /// <summary>
 /// Supplies the primary cover image for a book from the <c>cover.jpg</c> that
