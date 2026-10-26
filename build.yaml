@@ -1,0 +1,18 @@
+---
+name: "Calibre Library"
+guid: "e7f3b8d2-4c6a-4f1e-9b3a-2d5c7e9a1f40"
+version: "1.0.0.0"
+targetAbi: "12.3.0.0"
+framework: "net10.0"
+owner: "nicolas"
+overview: "Read Calibre metadata.db (read-only) to enrich the Jellyfin book library."
+description: >
+  Reads a Calibre metadata.db in read-only mode and populates genres, tags,
+  authors, series, titles and covers for the Jellyfin book library. Files stay
+  in place; original Calibre paths are preserved. Navigation by genre, tag,
+  author and series is then available natively in Jellyfin.
+category: "Metadata"
+artifacts:
+  - "Jellyfin.Plugin.Calibre.dll"
+changelog: >
+  1.0.0.0 - Initial release.

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <title>Calibre Library</title>
+</head>
+<body>
+<div id="CalibreConfigPage" data-role="page" class="page type-interior pluginConfigurationPage"
+     data-require="emby-input,emby-button,emby-checkbox">
+    <div data-role="content">
+        <div class="content-primary">
+            <form id="CalibreConfigForm">
+                <div class="verticalSection">
+                    <h2 class="sectionTitle">Bibliothèque Calibre</h2>
+                </div>
+
+                <div class="inputContainer">
+                    <input is="emby-input" type="text" id="CalibreLibraryPath" label="Chemin de la bibliothèque Calibre (facultatif)" />
+                    <div class="fieldDescription">
+                        Dossier contenant <code>metadata.db</code>. Laisser vide pour une détection
+                        automatique (le plugin remonte l'arborescence à partir de chaque livre).
+                        La base est ouverte en lecture seule ; aucun fichier n'est déplacé ni modifié.
+                    </div>
+                </div>
+
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label>
+                        <input is="emby-checkbox" type="checkbox" id="MapTagsToGenres" />
+                        <span>Mapper les tags Calibre vers les genres Jellyfin</span>
+                    </label>
+                    <div class="fieldDescription checkboxFieldDescription">
+                        Calibre n'a pas de champ « genre » dédié ; les genres sont habituellement
+                        stockés comme tags. Permet la navigation par genre dans Jellyfin.
+                    </div>
+                </div>
+
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label>
+                        <input is="emby-checkbox" type="checkbox" id="KeepTags" />
+                        <span>Conserver aussi les tags Calibre comme tags Jellyfin</span>
+                    </label>
+                </div>
+
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label>
+                        <input is="emby-checkbox" type="checkbox" id="ImportSeries" />
+                        <span>Importer la série et la position dans la série</span>
+                    </label>
+                </div>
+
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label>
+                        <input is="emby-checkbox" type="checkbox" id="ImportPublisher" />
+                        <span>Importer l'éditeur (comme studio)</span>
+                    </label>
+                </div>
+
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label>
+                        <input is="emby-checkbox" type="checkbox" id="ImportRating" />
+                        <span>Importer la note Calibre (0-10)</span>
+                    </label>
+                </div>
+
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label>
+                        <input is="emby-checkbox" type="checkbox" id="StripHtmlFromOverview" />
+                        <span>Retirer le HTML du résumé</span>
+                    </label>
+                </div>
+
+                <div>
+                    <button is="emby-button" type="submit" class="raised button-submit block">
+                        <span>Enregistrer</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var CalibrePluginId = "e7f3b8d2-4c6a-4f1e-9b3a-2d5c7e9a1f40";
+
+        document.querySelector('#CalibreConfigPage').addEventListener('pageshow', function () {
+            Dashboard.showLoadingMsg();
+            ApiClient.getPluginConfiguration(CalibrePluginId).then(function (config) {
+                document.querySelector('#CalibreLibraryPath').value = config.CalibreLibraryPath || '';
+                document.querySelector('#MapTagsToGenres').checked = !!config.MapTagsToGenres;
+                document.querySelector('#KeepTags').checked = !!config.KeepTags;
+                document.querySelector('#ImportSeries').checked = !!config.ImportSeries;
+                document.querySelector('#ImportPublisher').checked = !!config.ImportPublisher;
+                document.querySelector('#ImportRating').checked = !!config.ImportRating;
+                document.querySelector('#StripHtmlFromOverview').checked = !!config.StripHtmlFromOverview;
+                Dashboard.hideLoadingMsg();
+            });
+        });
+
+        document.querySelector('#CalibreConfigForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            Dashboard.showLoadingMsg();
+            ApiClient.getPluginConfiguration(CalibrePluginId).then(function (config) {
+                config.CalibreLibraryPath = document.querySelector('#CalibreLibraryPath').value;
+                config.MapTagsToGenres = document.querySelector('#MapTagsToGenres').checked;
+                config.KeepTags = document.querySelector('#KeepTags').checked;
+                config.ImportSeries = document.querySelector('#ImportSeries').checked;
+                config.ImportPublisher = document.querySelector('#ImportPublisher').checked;
+                config.ImportRating = document.querySelector('#ImportRating').checked;
+                config.StripHtmlFromOverview = document.querySelector('#StripHtmlFromOverview').checked;
+                ApiClient.updatePluginConfiguration(CalibrePluginId, config).then(function (result) {
+                    Dashboard.processPluginConfigurationUpdateResult(result);
+                });
+            });
+            return false;
+        });
+    </script>
+</div>
+</body>
+</html>

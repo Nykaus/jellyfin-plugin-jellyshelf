@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Jellyfin.Plugin.Calibre</RootNamespace>
+    <AssemblyName>Jellyfin.Plugin.Calibre</AssemblyName>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Match this version to your Jellyfin server version.
+         Jellyfin 12.x  => Jellyfin.Controller 12.x  (net10.0).
+         Jellyfin 10.11.x => Jellyfin.Controller 10.11.x (net8.0).
+         Jellyfin 10.10.x => Jellyfin.Controller 10.10.x (net8.0). -->
+    <PackageReference Include="Jellyfin.Controller" Version="12.3.0" />
+
+    <!-- Microsoft.Data.Sqlite is already loaded by the Jellyfin host (it uses it
+         for its own database). We compile against it but do NOT ship a copy, to
+         avoid an assembly version conflict at load time.
+         If the plugin fails to load with a "could not load Microsoft.Data.Sqlite"
+         error, remove the <ExcludeAssets> line below to bundle it instead. -->
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.0">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Configuration\configPage.html" />
+  </ItemGroup>
+
+</Project>
