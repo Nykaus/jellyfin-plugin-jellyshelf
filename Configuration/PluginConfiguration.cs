@@ -63,24 +63,6 @@ public class PluginConfiguration : BasePluginConfiguration
     public bool StripHtmlFromOverview { get; set; } = true;
 
     /// <summary>
-    /// Gets or sets a value indicating whether the "Build collections" scheduled task may
-    /// create/update Jellyfin collections from <see cref="CollectionDefinitions"/>.
-    /// </summary>
-    public bool EnableCollections { get; set; } = true;
-
-    /// <summary>
-    /// Gets or sets the collection definitions, one per line, formatted as
-    /// <c>Prefix | {field}</c> — one collection is created per distinct value of the Calibre
-    /// field, named <c>Prefix + value</c>. Fields are Calibre variables: <c>{title}</c>,
-    /// <c>{author}</c>, <c>{series}</c>, <c>{publisher}</c>, <c>{year}</c>, <c>{rating}</c>,
-    /// <c>{tag}</c>, or any custom column <c>{#label}</c> (e.g. <c>{#type}</c>, <c>{#editeur}</c>).
-    /// Multi-valued fields (tags, authors) place a book in every matching collection.
-    /// Lines starting with <c>#</c> are comments. Nothing is written to disk.
-    /// </summary>
-    public string CollectionDefinitions { get; set; } =
-        "Type — | {#type}\nSérie — | {series}";
-
-    /// <summary>
     /// Gets or sets a value indicating whether the "mirror folder" scheduled task may generate
     /// symlink trees from <see cref="ProfilesDefinition"/>. This gives a dedicated book-only
     /// library (its own page), never mixed with films or collections. Off by default.
