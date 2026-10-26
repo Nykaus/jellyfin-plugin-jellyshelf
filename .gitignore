@@ -14,3 +14,6 @@ DESIGN-LOCAL.md
 BJNASFlix.csv
 *.log
 
+# Banc de test local (dev uniquement, non poussé)
+_localtest/
+

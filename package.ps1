@@ -26,7 +26,7 @@ param(
     [Parameter(Mandatory = $true)]
     [string]$BaseUrl,
 
-    [string]$Version = "1.3.0.0",
+    [string]$Version = "1.3.1.0",
     [string]$Configuration = "Release"
 )
 
@@ -41,7 +41,7 @@ $category    = "Metadata"
 $targetAbi   = "12.3.0.0"
 $overview    = "Read Calibre metadata.db read-only to enrich the Jellyfin book library."
 $description = "Reads a Calibre metadata.db (read-only) and populates genres, tags, authors, series, titles and covers for the book library. Files stay in place; original Calibre paths are preserved."
-$changelog   = "1.3.0.0 - Mirror folder (symlink tree) for a dedicated book-only library page (not mixed with films/collections): shortcuts to Calibre books arranged by a template (e.g. {#type}/{series?}/{title}). Calibre read-only; links in a separate folder."
+$changelog   = "1.3.1.0 - Mirror folder: resolve path collisions (same type/series/title) by appending ' (2)', ' (3)'... so no book is dropped."
 
 $dll = Join-Path $root "bin/$Configuration/net10.0/Jellyfin.Plugin.JellyShelf.dll"
 $dist = Join-Path $root "dist"

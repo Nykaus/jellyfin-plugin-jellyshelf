@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -134,19 +135,30 @@ public class BuildTemplateLibrariesTask : IScheduledTask
                     }
 
                     Directory.CreateDirectory(parent);
-                    if (Directory.Exists(linkPath) || File.Exists(linkPath))
+
+                    // Resolve name collisions (two books with the same type/series/title) so no
+                    // book is silently dropped: append " (2)", " (3)", ...
+                    var finalPath = linkPath;
+                    var suffix = 2;
+                    while ((Directory.Exists(finalPath) || File.Exists(finalPath)) && suffix <= 100)
+                    {
+                        finalPath = linkPath + " (" + suffix.ToString(CultureInfo.InvariantCulture) + ")";
+                        suffix++;
+                    }
+
+                    if (Directory.Exists(finalPath) || File.Exists(finalPath))
                     {
                         continue;
                     }
 
                     try
                     {
-                        Directory.CreateSymbolicLink(linkPath, sourceFolder);
+                        Directory.CreateSymbolicLink(finalPath, sourceFolder);
                         links++;
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogDebug(ex, "Could not create link {Link} -> {Target}", linkPath, sourceFolder);
+                        _logger.LogDebug(ex, "Could not create link {Link} -> {Target}", finalPath, sourceFolder);
                     }
                 }
 
