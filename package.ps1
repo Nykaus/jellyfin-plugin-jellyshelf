@@ -26,7 +26,7 @@ param(
     [Parameter(Mandatory = $true)]
     [string]$BaseUrl,
 
-    [string]$Version = "1.3.3.0",
+    [string]$Version = "1.3.4.0",
     [string]$Configuration = "Release"
 )
 
@@ -41,7 +41,7 @@ $category    = "Metadata"
 $targetAbi   = "12.3.0.0"
 $overview    = "Read Calibre metadata.db read-only to enrich the Jellyfin book library."
 $description = "Reads a Calibre metadata.db (read-only) and populates genres, tags, authors, series, titles and covers for the book library. Files stay in place; original Calibre paths are preserved."
-$changelog   = "1.3.3.0 - Simplified config: removed the Collections feature and hid advanced metadata toggles (kept at defaults). Config page now shows only Calibre path, type->genre and the mirror folder settings."
+$changelog   = "1.3.4.0 - Mirror folder: each intermediate folder (type, series...) gets a representative folder.jpg linked to a book cover inside it. Metadata reader renamed 'Calibre' -> 'JellyShelf' in library metadata settings."
 
 $dll = Join-Path $root "bin/$Configuration/net10.0/Jellyfin.Plugin.JellyShelf.dll"
 $dist = Join-Path $root "dist"

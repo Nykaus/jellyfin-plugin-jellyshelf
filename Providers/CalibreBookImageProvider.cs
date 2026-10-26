@@ -14,7 +14,7 @@ namespace Jellyfin.Plugin.JellyShelf.Providers;
 public class CalibreBookImageProvider : ILocalImageProvider, IHasOrder
 {
     /// <inheritdoc />
-    public string Name => "Calibre";
+    public string Name => "JellyShelf";
 
     /// <inheritdoc />
     public int Order => 0;

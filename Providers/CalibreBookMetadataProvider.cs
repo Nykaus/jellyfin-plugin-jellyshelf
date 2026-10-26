@@ -38,7 +38,7 @@ public class CalibreBookMetadataProvider : ILocalMetadataProvider<Book>, IHasOrd
     }
 
     /// <inheritdoc />
-    public string Name => "Calibre";
+    public string Name => "JellyShelf";
 
     /// <inheritdoc />
     public int Order => 0;

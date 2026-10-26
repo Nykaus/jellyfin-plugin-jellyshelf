@@ -155,6 +155,10 @@ public class BuildTemplateLibrariesTask : IScheduledTask
                     {
                         Directory.CreateSymbolicLink(finalPath, sourceFolder);
                         links++;
+
+                        // Give each intermediate folder (type, series, …) a representative
+                        // thumbnail: link a folder.jpg to this book's cover (first one wins).
+                        SetFolderImages(profileDir, finalPath, Path.Combine(sourceFolder, "cover.jpg"));
                     }
                     catch (Exception ex)
                     {
@@ -205,6 +209,46 @@ public class BuildTemplateLibrariesTask : IScheduledTask
 
     private static string AppendSeparator(string path)
         => path.EndsWith(Path.DirectorySeparatorChar) ? path : path + Path.DirectorySeparatorChar;
+
+    /// <summary>
+    /// Sets a <c>folder.jpg</c> (symlink to the given cover) on every intermediate directory
+    /// between the book leaf and the profile root, so type/series folders show a representative
+    /// thumbnail. The first processed book that has a cover wins for each directory.
+    /// </summary>
+    private void SetFolderImages(string profileDir, string leafPath, string coverPath)
+    {
+        if (!File.Exists(coverPath))
+        {
+            return;
+        }
+
+        var rootFull = AppendSeparator(Path.GetFullPath(profileDir));
+        var dir = Path.GetDirectoryName(leafPath);
+
+        while (!string.IsNullOrEmpty(dir))
+        {
+            var dirFull = AppendSeparator(Path.GetFullPath(dir));
+            if (!dirFull.StartsWith(rootFull, StringComparison.Ordinal) || string.Equals(dirFull, rootFull, StringComparison.Ordinal))
+            {
+                break; // reached the profile root (or above): don't image the library root itself
+            }
+
+            var image = Path.Combine(dir, "folder.jpg");
+            if (!File.Exists(image))
+            {
+                try
+                {
+                    File.CreateSymbolicLink(image, coverPath);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogDebug(ex, "Could not set folder image at {Dir}", dir);
+                }
+            }
+
+            dir = Path.GetDirectoryName(dir);
+        }
+    }
 
     /// <summary>
     /// Recursively deletes a generated tree WITHOUT ever following symlinks: a reparse-point
