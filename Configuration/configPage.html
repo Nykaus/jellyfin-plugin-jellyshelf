@@ -123,6 +123,47 @@
                     </div>
                 </div>
 
+                <div class="verticalSection">
+                    <h2 class="sectionTitle">Dossier miroir (bibliothèque livres dédiée)</h2>
+                </div>
+
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label>
+                        <input is="emby-checkbox" type="checkbox" id="EnableTemplateLibraries" />
+                        <span>Générer un dossier miroir de liens</span>
+                    </label>
+                    <div class="fieldDescription checkboxFieldDescription">
+                        Crée un dossier de <strong>raccourcis</strong> (liens symboliques) vers tes livres
+                        Calibre, rangés selon ton gabarit. Tu crées ensuite une <strong>bibliothèque Livres
+                        Jellyfin dédiée</strong> pointant sur ce dossier → une <strong>page à part, livres
+                        uniquement</strong>, jamais mélangée avec les films ni les collections.
+                        <strong>Calibre n'est jamais modifié.</strong> Lancer ensuite la tâche
+                        <em>« JellyShelf — Générer le dossier miroir (liens) »</em>.
+                    </div>
+                </div>
+
+                <div class="inputContainer">
+                    <input is="emby-input" type="text" id="TemplateLibrariesOutputRoot" label="Dossier de sortie (inscriptible, vu par le conteneur)" />
+                    <div class="fieldDescription">
+                        Ex. <code>/tri</code>. <strong>Doit être séparé</strong> de la bibliothèque Calibre
+                        (jamais à l'intérieur) et monté en écriture dans le conteneur Docker.
+                    </div>
+                </div>
+
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="ProfilesDefinition">
+                        Profils — un par ligne : <code>Nom | sous-dossier | gabarit</code>
+                    </label>
+                    <textarea id="ProfilesDefinition" rows="5" class="emby-input" style="width:100%;"></textarea>
+                    <div class="fieldDescription">
+                        Ex. <code>Par type | par_type | {#type}/{series?}/{title}</code><br />
+                        Tokens : <code>{champ}</code>, <code>{champ?}</code> (sauté si vide),
+                        <code>{champ*}</code> (un dossier par valeur). Champs : title, author, series,
+                        seriesindex, publisher, year, rating, tag, et toute colonne perso
+                        <code>#libellé</code> (ex. <code>#type</code>, <code>#editeur</code>).
+                    </div>
+                </div>
+
                 <div>
                     <button is="emby-button" type="submit" class="raised button-submit block">
                         <span>Enregistrer</span>
@@ -149,6 +190,9 @@
                 document.querySelector('#StripHtmlFromOverview').checked = !!config.StripHtmlFromOverview;
                 document.querySelector('#EnableCollections').checked = !!config.EnableCollections;
                 document.querySelector('#CollectionDefinitions').value = config.CollectionDefinitions || '';
+                document.querySelector('#EnableTemplateLibraries').checked = !!config.EnableTemplateLibraries;
+                document.querySelector('#TemplateLibrariesOutputRoot').value = config.TemplateLibrariesOutputRoot || '';
+                document.querySelector('#ProfilesDefinition').value = config.ProfilesDefinition || '';
                 Dashboard.hideLoadingMsg();
             });
         });
@@ -168,6 +212,9 @@
                 config.StripHtmlFromOverview = document.querySelector('#StripHtmlFromOverview').checked;
                 config.EnableCollections = document.querySelector('#EnableCollections').checked;
                 config.CollectionDefinitions = document.querySelector('#CollectionDefinitions').value;
+                config.EnableTemplateLibraries = document.querySelector('#EnableTemplateLibraries').checked;
+                config.TemplateLibrariesOutputRoot = document.querySelector('#TemplateLibrariesOutputRoot').value;
+                config.ProfilesDefinition = document.querySelector('#ProfilesDefinition').value;
                 ApiClient.updatePluginConfiguration(CalibrePluginId, config).then(function (result) {
                     Dashboard.processPluginConfigurationUpdateResult(result);
                 });
