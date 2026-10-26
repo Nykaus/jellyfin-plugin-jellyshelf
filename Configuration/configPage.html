@@ -93,26 +93,33 @@
                 </div>
 
                 <div class="verticalSection">
-                    <h2 class="sectionTitle">Collections de séries</h2>
+                    <h2 class="sectionTitle">Collections (variables Calibre)</h2>
                 </div>
 
                 <div class="checkboxContainer checkboxContainer-withDescription">
                     <label>
-                        <input is="emby-checkbox" type="checkbox" id="CreateSeriesCollections" />
-                        <span>Créer une collection par série Calibre</span>
+                        <input is="emby-checkbox" type="checkbox" id="EnableCollections" />
+                        <span>Générer des collections par variable Calibre</span>
                     </label>
                     <div class="fieldDescription checkboxFieldDescription">
-                        La tâche planifiée <em>« JellyShelf — Construire les collections de séries »</em>
-                        (Tableau de bord → Tâches planifiées) crée/met à jour une collection par série.
-                        Lancer une <strong>analyse de la bibliothèque d'abord</strong> (les livres doivent
-                        porter leur identifiant Calibre).
+                        La tâche <em>« JellyShelf — Construire les collections »</em> (Tableau de bord →
+                        Tâches planifiées) crée une collection par valeur du champ indiqué. Tout se fait
+                        en données via l'API Jellyfin : <strong>aucun fichier ni raccourci n'est créé,
+                        Calibre n'est jamais modifié.</strong> Lancer une <strong>analyse de la
+                        bibliothèque d'abord</strong> (les livres doivent porter leur identifiant Calibre).
                     </div>
                 </div>
 
                 <div class="inputContainer">
-                    <input is="emby-input" type="text" id="SeriesCollectionPrefix" label="Préfixe des collections de séries (facultatif)" />
+                    <label class="inputLabel inputLabelUnfocused" for="CollectionDefinitions">
+                        Définitions — une par ligne : <code>Préfixe | {champ}</code>
+                    </label>
+                    <textarea id="CollectionDefinitions" rows="5" class="emby-input" style="width:100%;"></textarea>
                     <div class="fieldDescription">
-                        Préfixe optionnel ajouté au nom de chaque collection, ex. <code>Série — </code>.
+                        Ex. <code>Type — | {#type}</code> et <code>Série — | {series}</code> → une
+                        collection par type (Type — Romans, Type — Mangas…) et par série. Champs :
+                        title, author, series, publisher, year, rating, tag, et toute colonne perso
+                        <code>#libellé</code>. Chaque collection a sa propre page/URL dans Jellyfin.
                     </div>
                 </div>
 
@@ -140,8 +147,8 @@
                 document.querySelector('#ImportPublisher').checked = !!config.ImportPublisher;
                 document.querySelector('#ImportRating').checked = !!config.ImportRating;
                 document.querySelector('#StripHtmlFromOverview').checked = !!config.StripHtmlFromOverview;
-                document.querySelector('#CreateSeriesCollections').checked = !!config.CreateSeriesCollections;
-                document.querySelector('#SeriesCollectionPrefix').value = config.SeriesCollectionPrefix || '';
+                document.querySelector('#EnableCollections').checked = !!config.EnableCollections;
+                document.querySelector('#CollectionDefinitions').value = config.CollectionDefinitions || '';
                 Dashboard.hideLoadingMsg();
             });
         });
@@ -159,8 +166,8 @@
                 config.ImportPublisher = document.querySelector('#ImportPublisher').checked;
                 config.ImportRating = document.querySelector('#ImportRating').checked;
                 config.StripHtmlFromOverview = document.querySelector('#StripHtmlFromOverview').checked;
-                config.CreateSeriesCollections = document.querySelector('#CreateSeriesCollections').checked;
-                config.SeriesCollectionPrefix = document.querySelector('#SeriesCollectionPrefix').value;
+                config.EnableCollections = document.querySelector('#EnableCollections').checked;
+                config.CollectionDefinitions = document.querySelector('#CollectionDefinitions').value;
                 ApiClient.updatePluginConfiguration(CalibrePluginId, config).then(function (result) {
                     Dashboard.processPluginConfigurationUpdateResult(result);
                 });

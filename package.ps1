@@ -26,7 +26,7 @@ param(
     [Parameter(Mandatory = $true)]
     [string]$BaseUrl,
 
-    [string]$Version = "1.1.0.0",
+    [string]$Version = "1.2.0.0",
     [string]$Configuration = "Release"
 )
 
@@ -41,7 +41,7 @@ $category    = "Metadata"
 $targetAbi   = "12.3.0.0"
 $overview    = "Read Calibre metadata.db read-only to enrich the Jellyfin book library."
 $description = "Reads a Calibre metadata.db (read-only) and populates genres, tags, authors, series, titles and covers for the book library. Files stay in place; original Calibre paths are preserved."
-$changelog   = "1.1.0.0 - #type column -> genre, tags -> Jellyfin tags, scheduled task building one collection per Calibre series."
+$changelog   = "1.2.0.0 - Configurable collections by Calibre variable (e.g. 'Type - | {#type}', 'Serie - | {series}'): one collection per field value, via the Jellyfin API, nothing written to disk, Calibre read-only."
 
 $dll = Join-Path $root "bin/$Configuration/net10.0/Jellyfin.Plugin.JellyShelf.dll"
 $dist = Join-Path $root "dist"

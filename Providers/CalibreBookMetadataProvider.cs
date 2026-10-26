@@ -64,6 +64,11 @@ public class CalibreBookMetadataProvider : ILocalMetadataProvider<Book>, IHasOrd
                 return Task.FromResult(result);
             }
 
+            // When the library scans a generated symlink tree (template libraries), the book
+            // folder is a symlink to the real Calibre folder; resolve it so the books.path
+            // match below works against the real Calibre layout.
+            folder = ResolveRealFolder(folder);
+
             var config = Plugin.Instance?.Configuration ?? new PluginConfiguration();
 
             var root = ResolveLibraryRoot(folder, config.CalibreLibraryPath);
@@ -181,6 +186,32 @@ public class CalibreBookMetadataProvider : ILocalMetadataProvider<Book>, IHasOrd
         }
 
         return book;
+    }
+
+    /// <summary>
+    /// Resolves a folder to its real path when it is a symlink (as produced by the template
+    /// libraries feature); otherwise returns it unchanged.
+    /// </summary>
+    private static string ResolveRealFolder(string folder)
+    {
+        try
+        {
+            var info = new DirectoryInfo(folder);
+            if ((info.Attributes & FileAttributes.ReparsePoint) != 0)
+            {
+                var target = Directory.ResolveLinkTarget(folder, returnFinalTarget: true);
+                if (target is not null)
+                {
+                    return target.FullName;
+                }
+            }
+        }
+        catch (Exception)
+        {
+            // Fall back to the original path on any IO/permission error.
+        }
+
+        return folder;
     }
 
     private static string? BuildOverview(string? comment, bool stripHtml)
