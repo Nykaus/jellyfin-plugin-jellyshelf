@@ -23,14 +23,37 @@
                     </div>
                 </div>
 
+                <div class="verticalSection">
+                    <h2 class="sectionTitle">Navigation — genres & tags</h2>
+                </div>
+
+                <div class="inputContainer">
+                    <input is="emby-input" type="text" id="TypeColumnLabel" label="Colonne Calibre « type » (utilisée comme genre)" />
+                    <div class="fieldDescription">
+                        Libellé de la colonne personnalisée Calibre servant de genre / niveau 1
+                        (ex. <code>type</code> pour <code>#type</code> : Romans, Mangas, BD…).
+                    </div>
+                </div>
+
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label>
+                        <input is="emby-checkbox" type="checkbox" id="MapTypeColumnToGenre" />
+                        <span>Utiliser la colonne « type » comme genre Jellyfin</span>
+                    </label>
+                    <div class="fieldDescription checkboxFieldDescription">
+                        La vue « Genres » de la bibliothèque regroupera alors les livres par type
+                        (Romans, Mangas…).
+                    </div>
+                </div>
+
                 <div class="checkboxContainer checkboxContainer-withDescription">
                     <label>
                         <input is="emby-checkbox" type="checkbox" id="MapTagsToGenres" />
-                        <span>Mapper les tags Calibre vers les genres Jellyfin</span>
+                        <span>Mapper aussi les tags Calibre vers les genres</span>
                     </label>
                     <div class="fieldDescription checkboxFieldDescription">
-                        Calibre n'a pas de champ « genre » dédié ; les genres sont habituellement
-                        stockés comme tags. Permet la navigation par genre dans Jellyfin.
+                        Désactivé par défaut : si « type » alimente déjà le genre, activer ceci
+                        mélangerait les tags (Fantasy, manga, littérature…) dans les genres.
                     </div>
                 </div>
 
@@ -69,6 +92,30 @@
                     </label>
                 </div>
 
+                <div class="verticalSection">
+                    <h2 class="sectionTitle">Collections de séries</h2>
+                </div>
+
+                <div class="checkboxContainer checkboxContainer-withDescription">
+                    <label>
+                        <input is="emby-checkbox" type="checkbox" id="CreateSeriesCollections" />
+                        <span>Créer une collection par série Calibre</span>
+                    </label>
+                    <div class="fieldDescription checkboxFieldDescription">
+                        La tâche planifiée <em>« JellyShelf — Construire les collections de séries »</em>
+                        (Tableau de bord → Tâches planifiées) crée/met à jour une collection par série.
+                        Lancer une <strong>analyse de la bibliothèque d'abord</strong> (les livres doivent
+                        porter leur identifiant Calibre).
+                    </div>
+                </div>
+
+                <div class="inputContainer">
+                    <input is="emby-input" type="text" id="SeriesCollectionPrefix" label="Préfixe des collections de séries (facultatif)" />
+                    <div class="fieldDescription">
+                        Préfixe optionnel ajouté au nom de chaque collection, ex. <code>Série — </code>.
+                    </div>
+                </div>
+
                 <div>
                     <button is="emby-button" type="submit" class="raised button-submit block">
                         <span>Enregistrer</span>
@@ -85,12 +132,16 @@
             Dashboard.showLoadingMsg();
             ApiClient.getPluginConfiguration(CalibrePluginId).then(function (config) {
                 document.querySelector('#CalibreLibraryPath').value = config.CalibreLibraryPath || '';
+                document.querySelector('#TypeColumnLabel').value = config.TypeColumnLabel || '';
+                document.querySelector('#MapTypeColumnToGenre').checked = !!config.MapTypeColumnToGenre;
                 document.querySelector('#MapTagsToGenres').checked = !!config.MapTagsToGenres;
                 document.querySelector('#KeepTags').checked = !!config.KeepTags;
                 document.querySelector('#ImportSeries').checked = !!config.ImportSeries;
                 document.querySelector('#ImportPublisher').checked = !!config.ImportPublisher;
                 document.querySelector('#ImportRating').checked = !!config.ImportRating;
                 document.querySelector('#StripHtmlFromOverview').checked = !!config.StripHtmlFromOverview;
+                document.querySelector('#CreateSeriesCollections').checked = !!config.CreateSeriesCollections;
+                document.querySelector('#SeriesCollectionPrefix').value = config.SeriesCollectionPrefix || '';
                 Dashboard.hideLoadingMsg();
             });
         });
@@ -100,12 +151,16 @@
             Dashboard.showLoadingMsg();
             ApiClient.getPluginConfiguration(CalibrePluginId).then(function (config) {
                 config.CalibreLibraryPath = document.querySelector('#CalibreLibraryPath').value;
+                config.TypeColumnLabel = document.querySelector('#TypeColumnLabel').value;
+                config.MapTypeColumnToGenre = document.querySelector('#MapTypeColumnToGenre').checked;
                 config.MapTagsToGenres = document.querySelector('#MapTagsToGenres').checked;
                 config.KeepTags = document.querySelector('#KeepTags').checked;
                 config.ImportSeries = document.querySelector('#ImportSeries').checked;
                 config.ImportPublisher = document.querySelector('#ImportPublisher').checked;
                 config.ImportRating = document.querySelector('#ImportRating').checked;
                 config.StripHtmlFromOverview = document.querySelector('#StripHtmlFromOverview').checked;
+                config.CreateSeriesCollections = document.querySelector('#CreateSeriesCollections').checked;
+                config.SeriesCollectionPrefix = document.querySelector('#SeriesCollectionPrefix').value;
                 ApiClient.updatePluginConfiguration(CalibrePluginId, config).then(function (result) {
                     Dashboard.processPluginConfigurationUpdateResult(result);
                 });

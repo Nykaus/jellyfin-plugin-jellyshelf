@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -77,7 +78,8 @@ public class CalibreBookMetadataProvider : ILocalMetadataProvider<Book>, IHasOrd
                 .Replace('\\', '/')
                 .TrimEnd('/');
 
-            var book = CalibreDatabase.GetBookByRelativePath(dbPath, relative);
+            var typeLabel = config.MapTypeColumnToGenre ? config.TypeColumnLabel : null;
+            var book = CalibreDatabase.GetBookByRelativePath(dbPath, relative, typeLabel);
             if (book is null)
             {
                 _logger.LogDebug("No Calibre row matched path {RelativePath}", relative);
@@ -126,9 +128,20 @@ public class CalibreBookMetadataProvider : ILocalMetadataProvider<Book>, IHasOrd
             }
         }
 
+        var genres = new List<string>();
+        if (config.MapTypeColumnToGenre && !string.IsNullOrWhiteSpace(source.Type))
+        {
+            genres.Add(source.Type!);
+        }
+
         if (config.MapTagsToGenres)
         {
-            book.Genres = source.Tags.ToArray();
+            genres.AddRange(source.Tags);
+        }
+
+        if (genres.Count > 0)
+        {
+            book.Genres = genres.ToArray();
         }
 
         if (config.KeepTags)

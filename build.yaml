@@ -1,7 +1,7 @@
 ---
 name: "JellyShelf"
 guid: "e7f3b8d2-4c6a-4f1e-9b3a-2d5c7e9a1f40"
-version: "1.0.0.0"
+version: "1.1.0.0"
 targetAbi: "12.3.0.0"
 framework: "net10.0"
 owner: "nicolas"
@@ -15,4 +15,6 @@ category: "Metadata"
 artifacts:
   - "Jellyfin.Plugin.JellyShelf.dll"
 changelog: >
+  1.1.0.0 - Custom "type" column mapped to genre; Calibre tags kept as Jellyfin tags;
+  new scheduled task to build one collection per Calibre series.
   1.0.0.0 - Initial release.

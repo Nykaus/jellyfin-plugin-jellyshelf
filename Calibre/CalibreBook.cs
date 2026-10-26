@@ -17,6 +17,12 @@ public class CalibreBook
     /// <summary>Gets or sets the Calibre sort title.</summary>
     public string? SortTitle { get; set; }
 
+    /// <summary>
+    /// Gets or sets the value of the Calibre custom "type" column used as the Jellyfin
+    /// genre (e.g. Romans, Mangas, BD). <c>null</c> when the column is absent or empty.
+    /// </summary>
+    public string? Type { get; set; }
+
     /// <summary>Gets or sets the publish date.</summary>
     public DateTime? PublishDate { get; set; }
 

@@ -15,11 +15,24 @@ public class PluginConfiguration : BasePluginConfiguration
     public string CalibreLibraryPath { get; set; } = string.Empty;
 
     /// <summary>
-    /// Gets or sets a value indicating whether Calibre tags are mapped to
-    /// Jellyfin genres (Calibre has no dedicated genre field; genres are
-    /// conventionally stored as tags).
+    /// Gets or sets the label of the Calibre custom column used as the Jellyfin genre
+    /// (first navigation level, e.g. Romans / Mangas / BD). Matches the custom column's
+    /// <c>label</c> in Calibre (the <c>#label</c> without the leading <c>#</c>).
     /// </summary>
-    public bool MapTagsToGenres { get; set; } = true;
+    public string TypeColumnLabel { get; set; } = "type";
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the Calibre custom "type" column
+    /// (<see cref="TypeColumnLabel"/>) is mapped to the Jellyfin genre.
+    /// </summary>
+    public bool MapTypeColumnToGenre { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether Calibre tags are mapped to
+    /// Jellyfin genres. Off by default: with <see cref="MapTypeColumnToGenre"/> on,
+    /// the genre comes from the type column and tags would otherwise pollute it.
+    /// </summary>
+    public bool MapTagsToGenres { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether Calibre tags are also kept as
@@ -48,4 +61,16 @@ public class PluginConfiguration : BasePluginConfiguration
     /// comment when used as the overview.
     /// </summary>
     public bool StripHtmlFromOverview { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the "Build series collections" scheduled
+    /// task is allowed to create/update a Jellyfin collection (BoxSet) per Calibre series.
+    /// </summary>
+    public bool CreateSeriesCollections { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets an optional prefix prepended to every series collection name
+    /// (e.g. <c>"Série — "</c>) so they are easy to distinguish. Empty by default.
+    /// </summary>
+    public string SeriesCollectionPrefix { get; set; } = string.Empty;
 }

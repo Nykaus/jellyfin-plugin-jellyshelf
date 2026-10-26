@@ -5,3 +5,12 @@ obj/
 .idea/
 artifacts/
 dist/
+
+# Notes/guide internes — ne jamais pousser sur GitHub
+GUIDE-LOCAL.md
+DESIGN-LOCAL.md
+
+# Journaux serveur Jellyfin déposés pour debug (contiennent des données sensibles)
+BJNASFlix.csv
+*.log
+
