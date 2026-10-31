@@ -94,6 +94,31 @@ $md5 = (Get-FileHash -Algorithm MD5 -Path $zipPath).Hash.ToLower()
 $sourceUrl = "$($BaseUrl.TrimEnd('/'))/$zipName"
 
 Write-Host "==> Writing manifest.json..."
+$newVersion = [ordered]@{
+    version   = $Version
+    changelog = $changelog
+    targetAbi = $targetAbi
+    sourceUrl = $sourceUrl
+    checksum  = $md5
+    timestamp = $timestamp
+}
+
+# Keep the revision history: carry over the existing manifest's versions (minus any
+# entry for the version being built), newest first.
+$existing = @()
+$rootManifest = Join-Path $root "manifest.json"
+if (Test-Path $rootManifest) {
+    try {
+        $prev = Get-Content $rootManifest -Raw | ConvertFrom-Json
+        $prevObj = if ($prev -is [array]) { $prev[0] } else { $prev }
+        if ($prevObj.versions) {
+            $existing = @($prevObj.versions | Where-Object { $_.version -ne $Version })
+        }
+    } catch {
+        Write-Host "   (could not read existing manifest; writing a single-version manifest)"
+    }
+}
+
 $manifest = [ordered]@{
     guid        = $guid
     name        = $name
@@ -101,16 +126,7 @@ $manifest = [ordered]@{
     overview    = $overview
     owner       = $owner
     category    = $category
-    versions    = @(
-        [ordered]@{
-            version   = $Version
-            changelog = $changelog
-            targetAbi = $targetAbi
-            sourceUrl = $sourceUrl
-            checksum  = $md5
-            timestamp = $timestamp
-        }
-    )
+    versions    = @($newVersion) + $existing
 }
 ConvertTo-Json -InputObject @($manifest) -Depth 6 | Set-Content -Path (Join-Path $dist "manifest.json") -Encoding UTF8
 
