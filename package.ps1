@@ -61,8 +61,8 @@ Write-Host "==> Staging..."
 if (Test-Path $stage) { Remove-Item -Recurse -Force $stage }
 New-Item -ItemType Directory -Force -Path $stage | Out-Null
 Copy-Item $dll -Destination $stage
-foreach ($name in $extraDlls) {
-    $dep = Join-Path $root "bin/$Configuration/net10.0/$name"
+foreach ($depName in $extraDlls) {
+    $dep = Join-Path $root "bin/$Configuration/net10.0/$depName"
     if (-not (Test-Path $dep)) { throw "Dependency not found: $dep" }
     Copy-Item $dep -Destination $stage
 }

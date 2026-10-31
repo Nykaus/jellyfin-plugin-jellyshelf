@@ -1,7 +1,7 @@
 [
   {
     "guid": "e7f3b8d2-4c6a-4f1e-9b3a-2d5c7e9a1f40",
-    "name": "ZstdSharp.dll",
+    "name": "JellyShelf",
     "description": "Reads a Calibre metadata.db (read-only) and populates genres, tags, authors, series, titles and covers for the book library. Files stay in place; original Calibre paths are preserved.",
     "overview": "Read Calibre metadata.db read-only to enrich the Jellyfin book library.",
     "owner": "nicolas",
@@ -12,8 +12,8 @@
         "changelog": "1.4.0.0 - In-browser reader at /JellyShelf/?id=<itemId>: PDF (pdf.js) and comics (CBZ/CBR/7z/tar via SharpCompress), with pointer-anchored zoom (wheel/pinch, 200% cap), fit width/page, rotation, vertical lazy rendering and horizontal page-by-page.",
         "targetAbi": "12.3.0.0",
         "sourceUrl": "https://github.com/Nykaus/jellyfin-plugin-jellyshelf/releases/download/v1.4.0.0/jellyfin-plugin-jellyshelf_1.4.0.0.zip",
-        "checksum": "d657e2e16f84658d64d2e417ad719662",
-        "timestamp": "2026-10-31T02:46:40Z"
+        "checksum": "263060cb3d9f5b435ea394b110cad7a1",
+        "timestamp": "2026-10-31T02:56:27Z"
       }
     ]
   }
