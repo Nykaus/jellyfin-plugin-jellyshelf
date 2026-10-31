@@ -74,6 +74,13 @@ public class BookController : ControllerBase
             return new JsonResult(new { kind = "pdf" });
         }
 
+        if (ext.Equals(".epub", StringComparison.OrdinalIgnoreCase))
+        {
+            // The reader reads the EPUB client-side (foliate-js unzips it in the
+            // browser), so the server only needs to name the kind.
+            return new JsonResult(new { kind = "epub" });
+        }
+
         if (_comicExtensions.Contains(ext))
         {
             return new JsonResult(new { kind = "comic", pageCount = ComicPages(path).Count });

@@ -1,0 +1,17 @@
+Fonts bundled with the JellyShelf reader
+========================================
+
+These fonts are offered as optional, accessibility-friendly reading faces in the
+EPUB reader. They are redistributed unmodified under their own licenses.
+
+OpenDyslexic
+  Copyright OpenDyslexic (Abbie Gonzalez) and contributors.
+  Licensed under the SIL Open Font License, Version 1.1.
+  https://opendyslexic.org/  |  https://github.com/antijingoist/opendyslexic
+  (woff2 files from the @fontsource/opendyslexic distribution)
+
+Atkinson Hyperlegible
+  Copyright Braille Institute of America, Inc.
+  Licensed under the Atkinson Hyperlegible Font License (free to use and
+  distribute).
+  https://brailleinstitute.org/freefont  |  https://github.com/googlefonts/atkinson-hyperlegible

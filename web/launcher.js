@@ -33,10 +33,10 @@
         return (mediaType || '').toLowerCase() === 'book';
     };
 
-    // The formats JellyShelf opens: PDF and comic archives.
+    // The formats JellyShelf opens: PDF, EPUB and comic archives.
     JellyShelfBookPlayer.prototype.canPlayItem = function (item) {
         return !!(item && typeof item.Path === 'string'
-            && /\.(pdf|cbz|cbr|zip|rar|cb7|cbt)$/i.test(item.Path));
+            && /\.(pdf|epub|cbz|cbr|zip|rar|cb7|cbt)$/i.test(item.Path));
     };
 
     JellyShelfBookPlayer.prototype.play = function (options) {

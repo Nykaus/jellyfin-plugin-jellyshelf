@@ -10,6 +10,7 @@
 // and a click on the left half to the previous one.
 
 import * as pdfjsLib from './pdf.mjs';
+import { makeStateClient } from './reader-state.js';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('./pdf.worker.mjs', import.meta.url).href;
 
@@ -42,6 +43,8 @@ const state = {
     renderGen: 0,       // bumped on every render request; a running render aborts when it changes
     anchor: null,       // centre ratio to keep fixed across a zoom re-render
     itemId: null,       // the open book, for the "close" button
+    stateClient: null,  // per-account store for resuming where you left off
+    pendingScrollRatio: null, // vertical scroll to restore after the first render
 };
 
 function show(stateName, message = '') {
@@ -147,6 +150,13 @@ async function start() {
     show('loading', 'Ouverture…');
     try {
         const info = await fetchInfo(base, itemId, auth);
+        if (info && info.kind === 'epub') {
+            // Reflowable text is a different world from the canvas (paginated
+            // HTML, not raster pages): a dedicated module takes over the page.
+            const { startEpub } = await import('./epub-reader.js');
+            await startEpub({ base, itemId, auth, show, closeReader });
+            return;
+        }
         if (info && info.kind === 'comic' && info.pageCount > 0) {
             state.source = comicSource(base, itemId, auth, info.pageCount);
         } else {
@@ -163,8 +173,10 @@ async function start() {
             state.source = pdfSource(await pdfjsLib.getDocument({ data }).promise);
         }
 
-        state.current = 1;
+        state.stateClient = makeStateClient(base, auth);
+        await applyCanvasResume();
         await renderAll();
+        restoreCanvasScroll();
         show('rendered');
         updatePageIndicator();
     } catch (error) {
@@ -281,6 +293,7 @@ async function renderAll() {
                 state.renderedScale = state.scale;
                 updateZoomLabel();
                 applyScroll(anchor, ratio);
+                saveCanvasState();
             }
         } while (state.renderPending);
     } finally {
@@ -629,6 +642,70 @@ function updatePageIndicator() {
         : `${state.source.numPages} pages`;
 }
 
+// --- Resume: remember where this account last was in this book ---
+
+// Applies a saved reading position (page, reading direction, zoom, rotation)
+// before the first render; a vertical scroll offset is restored afterwards.
+async function applyCanvasResume() {
+    state.current = 1;
+    state.pendingScrollRatio = null;
+    if (!state.stateClient || !state.itemId) {
+        return;
+    }
+    const saved = await state.stateClient.load(`pos/${state.itemId}`);
+    if (!saved || saved.mode !== 'canvas') {
+        return;
+    }
+    if (saved.orientation === 'vertical' || saved.orientation === 'horizontal') {
+        state.orientation = saved.orientation;
+    }
+    if (Number.isFinite(saved.rotation)) {
+        state.rotation = ((saved.rotation % 360) + 360) % 360;
+    }
+    if (saved.fit === 'width' || saved.fit === 'page') {
+        state.fit = saved.fit;
+    } else if (Number.isFinite(saved.scale)) {
+        state.fit = null;
+        state.scale = saved.scale;
+    }
+    if (Number.isFinite(saved.page)) {
+        state.current = Math.min(state.source.numPages, Math.max(1, Math.round(saved.page)));
+    }
+    if (Number.isFinite(saved.scrollRatio)) {
+        state.pendingScrollRatio = saved.scrollRatio;
+    }
+    applyOrientation();
+}
+
+function restoreCanvasScroll() {
+    if (state.orientation === 'vertical' && state.pendingScrollRatio != null) {
+        const maxY = Math.max(0, pagesEl.scrollHeight - viewerEl.clientHeight);
+        viewerEl.scrollTop = Math.min(maxY, state.pendingScrollRatio * pagesEl.scrollHeight);
+    }
+    state.pendingScrollRatio = null;
+}
+
+function canvasPosition() {
+    const scrollRatio = (state.orientation === 'vertical' && pagesEl.scrollHeight > 0)
+        ? viewerEl.scrollTop / pagesEl.scrollHeight
+        : 0;
+    return {
+        mode: 'canvas',
+        page: state.current,
+        orientation: state.orientation,
+        fit: state.fit,
+        scale: state.scale,
+        rotation: state.rotation,
+        scrollRatio,
+    };
+}
+
+function saveCanvasState() {
+    if (state.stateClient && state.source && state.itemId) {
+        state.stateClient.save(`pos/${state.itemId}`, canvasPosition());
+    }
+}
+
 // --- Zoom (wheel / pinch), with a live CSS preview then a crisp re-render ---
 
 let liveTimer = null;
@@ -714,7 +791,9 @@ function wireControls() {
     }, { passive: false });
 
     // Keyboard stays available: + / - / 0 and page turns in horizontal mode.
+    // (Inert once the EPUB reader has taken over the page — it binds its own.)
     window.addEventListener('keydown', (e) => {
+        if (document.body.dataset.mode === 'epub') { return; }
         if (e.key === '+' || e.key === '=') { zoomBy(1.25); }
         else if (e.key === '-') { zoomBy(1 / 1.25); }
         else if (e.key === '0') { state.fit = 'width'; renderAll(); }
@@ -724,6 +803,21 @@ function wireControls() {
 
     wirePointer();
     window.addEventListener('resize', () => { if (state.fit) { renderAll(); } });
+
+    // Resume support: save the vertical scroll position (debounced) and make sure
+    // the exact position is written if the page is closed.
+    viewerEl.addEventListener('scroll', () => {
+        if (state.stateClient && state.orientation === 'vertical') {
+            saveCanvasState();
+        }
+    }, { passive: true });
+    const flush = () => {
+        if (state.stateClient && state.source && state.itemId) {
+            state.stateClient.saveNow(`pos/${state.itemId}`, canvasPosition());
+        }
+    };
+    window.addEventListener('pagehide', flush);
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') { flush(); } });
 }
 
 function applyOrientation() {

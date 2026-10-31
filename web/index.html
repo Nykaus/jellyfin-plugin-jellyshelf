@@ -6,7 +6,8 @@
     <title>JellyShelf — Lecteur</title>
     <link rel="stylesheet" href="reader.css">
 </head>
-<body data-state="loading" data-orientation="horizontal">
+<body data-state="loading" data-mode="canvas" data-orientation="horizontal" data-theme="dark">
+    <!-- Canvas reader (PDF + comics): zoom / rotation / fit. -->
     <header id="toolbar" role="toolbar" aria-label="Contrôles de lecture">
         <button id="close" type="button" title="Fermer le lecteur" aria-label="Fermer le lecteur">✕</button>
         <span class="sep" aria-hidden="true"></span>
@@ -29,6 +30,90 @@
     <main id="viewer" tabindex="0">
         <div id="pages"></div>
     </main>
+
+    <!-- EPUB reader (reflowable text via foliate-js): font / size / theme / layout. -->
+    <header id="epub-toolbar" role="toolbar" aria-label="Contrôles de lecture">
+        <button id="epub-close" type="button" title="Fermer le lecteur" aria-label="Fermer le lecteur">✕</button>
+        <span class="sep" aria-hidden="true"></span>
+        <button id="toc-btn" type="button" title="Sommaire" aria-haspopup="true" aria-expanded="false">≣ Sommaire</button>
+        <button id="settings-btn" type="button" title="Réglages de lecture" aria-haspopup="true" aria-expanded="false">Aa Réglages</button>
+        <span class="spacer"></span>
+        <button id="epub-prev" type="button" title="Page précédente" aria-label="Page précédente">‹</button>
+        <button id="epub-next" type="button" title="Page suivante" aria-label="Page suivante">›</button>
+
+        <!-- Reading settings panel. -->
+        <div id="epub-settings" role="menu" hidden>
+            <label class="ep-row">
+                <span>Police</span>
+                <select id="ep-font">
+                    <option value="default">Police du livre</option>
+                    <option value="serif">Serif</option>
+                    <option value="sans">Sans serif</option>
+                    <option value="opendyslexic">OpenDyslexic</option>
+                    <option value="atkinson">Atkinson Hyperlegible</option>
+                </select>
+            </label>
+            <div class="ep-row">
+                <span>Taille</span>
+                <span class="ep-stepper">
+                    <button id="ep-size-dec" type="button" aria-label="Diminuer la taille">−</button>
+                    <b id="ep-size-val">100%</b>
+                    <button id="ep-size-inc" type="button" aria-label="Augmenter la taille">+</button>
+                </span>
+            </div>
+            <div class="ep-row">
+                <span>Interligne</span>
+                <span class="ep-stepper">
+                    <button id="ep-spacing-dec" type="button" aria-label="Diminuer l'interligne">−</button>
+                    <b id="ep-spacing-val">1.5</b>
+                    <button id="ep-spacing-inc" type="button" aria-label="Augmenter l'interligne">+</button>
+                </span>
+            </div>
+            <div class="ep-row">
+                <span>Largeur</span>
+                <span class="ep-stepper">
+                    <button id="ep-width-dec" type="button" aria-label="Réduire la largeur">−</button>
+                    <b id="ep-width-val">Moyenne</b>
+                    <button id="ep-width-inc" type="button" aria-label="Augmenter la largeur">+</button>
+                </span>
+            </div>
+            <label class="ep-row ep-check">
+                <span>Texte justifié</span>
+                <input id="ep-justify" type="checkbox">
+            </label>
+            <label class="ep-row ep-check">
+                <span>Césure (coupure des mots)</span>
+                <input id="ep-hyphenate" type="checkbox">
+            </label>
+            <div class="ep-row">
+                <span>Thème</span>
+                <span class="ep-themes">
+                    <button id="ep-theme-light" type="button" class="ep-theme" data-theme="light" title="Clair">Clair</button>
+                    <button id="ep-theme-sepia" type="button" class="ep-theme" data-theme="sepia" title="Sépia">Sépia</button>
+                    <button id="ep-theme-dark" type="button" class="ep-theme" data-theme="dark" title="Nuit">Nuit</button>
+                </span>
+            </div>
+            <div class="ep-row">
+                <span>Disposition</span>
+                <span class="ep-stepper">
+                    <button id="ep-flow-paginated" type="button" class="ep-flow" data-flow="paginated">Pages</button>
+                    <button id="ep-flow-scrolled" type="button" class="ep-flow" data-flow="scrolled">Défilement</button>
+                </span>
+            </div>
+        </div>
+
+        <!-- Table of contents panel. -->
+        <nav id="epub-toc" aria-label="Sommaire" hidden></nav>
+    </header>
+
+    <main id="epub-viewer">
+        <div id="epub-root"></div>
+    </main>
+
+    <footer id="epub-footer">
+        <input id="epub-slider" type="range" min="0" max="1" step="0.0001" value="0" aria-label="Progression">
+        <span id="epub-percent">0 %</span>
+    </footer>
 
     <div id="status" role="status">Chargement…</div>
 

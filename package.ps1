@@ -26,7 +26,7 @@ param(
     [Parameter(Mandatory = $true)]
     [string]$BaseUrl,
 
-    [string]$Version = "1.4.0.0",
+    [string]$Version = "1.5.0.0",
     [string]$Configuration = "Release"
 )
 
@@ -41,7 +41,7 @@ $category    = "Metadata"
 $targetAbi   = "12.3.0.0"
 $overview    = "Read Calibre metadata.db read-only to enrich the Jellyfin book library."
 $description = "Reads a Calibre metadata.db (read-only) and populates genres, tags, authors, series, titles and covers for the book library. Files stay in place; original Calibre paths are preserved."
-$changelog   = "1.4.0.0 - In-browser reader at /JellyShelf/?id=<itemId>: PDF (pdf.js) and comics (CBZ/CBR/7z/tar via SharpCompress), with pointer-anchored zoom (wheel/pinch, 200% cap), fit width/page, rotation, vertical lazy rendering and horizontal page-by-page."
+$changelog   = "1.5.0.0 - EPUB reader (reflowable text via foliate-js): selectable fonts incl. OpenDyslexic and Atkinson Hyperlegible, font size, line spacing, column width, justification, light/sepia/night themes, table of contents and a progress bar. Reading preferences and the last position in each book now sync per Jellyfin account across devices (PDF, comics and EPUB)."
 
 $dll = Join-Path $root "bin/$Configuration/net10.0/Jellyfin.Plugin.JellyShelf.dll"
 # Bundled runtime dependencies that Jellyfin does not provide.
