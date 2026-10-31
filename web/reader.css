@@ -1,0 +1,182 @@
+:root {
+    --bg: #1e1e1e;
+    --toolbar-bg: #2b2b2b;
+    --fg: #f0f0f0;
+    --accent: #00a4dc;
+    --btn-bg: #3a3a3a;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    overflow: hidden;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+#toolbar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    background: var(--toolbar-bg);
+    border-bottom: 1px solid #000;
+    flex: 0 0 auto;
+    user-select: none;
+    flex-wrap: wrap;
+    position: relative;
+}
+
+#menu-wrap { position: relative; }
+
+#menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 6px;
+    background: var(--toolbar-bg);
+    border: 1px solid #000;
+    border-radius: 8px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+    min-width: 170px;
+}
+
+#menu[hidden] { display: none; }
+
+#menu button {
+    text-align: left;
+    width: 100%;
+}
+
+#toolbar button {
+    background: var(--btn-bg);
+    color: var(--fg);
+    border: none;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 15px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+#toolbar button:hover { background: #4a4a4a; }
+#toolbar button:active { background: var(--accent); }
+
+#toolbar .sep {
+    width: 1px;
+    height: 22px;
+    background: #555;
+    margin: 0 4px;
+}
+
+#toolbar .spacer { flex: 1 1 auto; }
+
+#page-indicator {
+    font-variant-numeric: tabular-nums;
+    opacity: 0.8;
+    padding-right: 4px;
+}
+
+#viewer {
+    flex: 1 1 auto;
+    overflow: auto;
+    outline: none;
+    -webkit-overflow-scrolling: touch;
+    cursor: grab;
+    touch-action: pan-x pan-y;
+}
+
+#viewer.panning { cursor: grabbing; }
+
+/* In page-by-page mode the halves of the view turn the page. */
+body[data-orientation="horizontal"] #viewer { cursor: default; }
+
+#pages {
+    display: flex;
+    flex-direction: column;
+    /* "safe" keeps a page wider/taller than the view reachable by scrolling,
+       instead of centring it into a negative-scroll area that is cut off. */
+    align-items: safe center;
+    gap: 12px;
+    padding: 12px;
+    min-height: 100%;
+    width: fit-content;
+    min-width: 100%;
+}
+
+/* Horizontal mode shows a single page, no scroll stack. */
+body[data-orientation="horizontal"] #pages {
+    flex-direction: row;
+    justify-content: safe center;
+    align-items: safe center;
+    padding: 0;
+    min-height: 100%;
+    height: auto;
+}
+
+/* A page looks the same whether a direct canvas (horizontal) or a lazy slot
+   (vertical) holding its canvas once rendered. */
+#pages > canvas,
+#pages .slot {
+    display: block;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    max-width: none;
+}
+
+#pages .slot {
+    position: relative;
+}
+
+#pages .slot > canvas {
+    display: block;
+    box-shadow: none;
+    background: transparent;
+}
+
+/* A subtle spinner hint while a visible page is still rendering. */
+#pages .slot.visible:empty::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 26px;
+    height: 26px;
+    border: 3px solid rgba(0, 0, 0, 0.15);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: jf-spin 0.8s linear infinite;
+}
+
+@keyframes jf-spin { to { transform: rotate(360deg); } }
+
+#status {
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.85);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    max-width: 80vw;
+    text-align: center;
+    pointer-events: none;
+}
+
+body[data-state="rendered"] #status { display: none; }
+body[data-state="error"] #status { background: #7a1f1f; pointer-events: auto; }
+body[data-state="error"] #toolbar { opacity: 0.4; pointer-events: none; }

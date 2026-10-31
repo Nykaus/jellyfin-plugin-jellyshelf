@@ -26,7 +26,7 @@ param(
     [Parameter(Mandatory = $true)]
     [string]$BaseUrl,
 
-    [string]$Version = "1.3.4.0",
+    [string]$Version = "1.4.0.0",
     [string]$Configuration = "Release"
 )
 
@@ -41,9 +41,11 @@ $category    = "Metadata"
 $targetAbi   = "12.3.0.0"
 $overview    = "Read Calibre metadata.db read-only to enrich the Jellyfin book library."
 $description = "Reads a Calibre metadata.db (read-only) and populates genres, tags, authors, series, titles and covers for the book library. Files stay in place; original Calibre paths are preserved."
-$changelog   = "1.3.4.0 - Mirror folder: each intermediate folder (type, series...) gets a representative folder.jpg linked to a book cover inside it. Metadata reader renamed 'Calibre' -> 'JellyShelf' in library metadata settings."
+$changelog   = "1.4.0.0 - In-browser reader at /JellyShelf/?id=<itemId>: PDF (pdf.js) and comics (CBZ/CBR/7z/tar via SharpCompress), with pointer-anchored zoom (wheel/pinch, 200% cap), fit width/page, rotation, vertical lazy rendering and horizontal page-by-page."
 
 $dll = Join-Path $root "bin/$Configuration/net10.0/Jellyfin.Plugin.JellyShelf.dll"
+# Bundled runtime dependencies that Jellyfin does not provide.
+$extraDlls = @("SharpCompress.dll", "ZstdSharp.dll")
 $dist = Join-Path $root "dist"
 $stage = Join-Path $dist "stage"
 $timestamp = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
@@ -59,6 +61,11 @@ Write-Host "==> Staging..."
 if (Test-Path $stage) { Remove-Item -Recurse -Force $stage }
 New-Item -ItemType Directory -Force -Path $stage | Out-Null
 Copy-Item $dll -Destination $stage
+foreach ($name in $extraDlls) {
+    $dep = Join-Path $root "bin/$Configuration/net10.0/$name"
+    if (-not (Test-Path $dep)) { throw "Dependency not found: $dep" }
+    Copy-Item $dep -Destination $stage
+}
 
 # meta.json lives inside the zip; Jellyfin reads it once extracted.
 $meta = [ordered]@{

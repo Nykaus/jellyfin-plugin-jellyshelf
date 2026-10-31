@@ -84,4 +84,12 @@ public class PluginConfiguration : BasePluginConfiguration
     /// </summary>
     public string ProfilesDefinition { get; set; } =
         "Par type | par_type | {#type}/{series?}/{title}";
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the Play/Read button in jellyfin-web
+    /// opens the JellyShelf reader for supported books (PDF and comics). Requires the
+    /// File Transformation plugin; when it is absent the reader still works via its
+    /// own URL (<c>/JellyShelf/?id=...</c>). On by default.
+    /// </summary>
+    public bool EnableWebIntegration { get; set; } = true;
 }

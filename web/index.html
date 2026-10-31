@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
+    <title>JellyShelf — Lecteur</title>
+    <link rel="stylesheet" href="reader.css">
+</head>
+<body data-state="loading" data-orientation="horizontal">
+    <header id="toolbar" role="toolbar" aria-label="Contrôles de lecture">
+        <button id="close" type="button" title="Fermer le lecteur" aria-label="Fermer le lecteur">✕</button>
+        <span class="sep" aria-hidden="true"></span>
+        <button id="zoom-level" type="button" title="Zoom : molette (ordinateur) ou 2 doigts (tactile). Cliquez pour ajuster à la largeur.">100%</button>
+        <span class="sep" aria-hidden="true"></span>
+        <button id="orientation" type="button" title="Sens de lecture : vertical / horizontal">Horizontal</button>
+        <span id="page-indicator" aria-live="polite"></span>
+        <span class="spacer"></span>
+        <div id="menu-wrap">
+            <button id="menu-btn" type="button" title="Menu" aria-haspopup="true" aria-expanded="false">☰</button>
+            <div id="menu" role="menu" hidden>
+                <button id="refresh" type="button" role="menuitem">⟲ Actualiser</button>
+                <button id="fit-width" type="button" role="menuitem">↔ Largeur</button>
+                <button id="fit-page" type="button" role="menuitem">▭ Page</button>
+                <button id="rotate" type="button" role="menuitem">⟳ Rotation</button>
+            </div>
+        </div>
+    </header>
+
+    <main id="viewer" tabindex="0">
+        <div id="pages"></div>
+    </main>
+
+    <div id="status" role="status">Chargement…</div>
+
+    <script type="module" src="reader.js"></script>
+</body>
+</html>
